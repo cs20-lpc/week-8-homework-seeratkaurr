@@ -1,19 +1,7 @@
 template <typename T>
-LinkedListStack<T>::LinkedListStack()
-{ }
-
-template <typename T>
-LinkedListStack<T>::LinkedListStack(const LinkedListStack<T>& copyObj) {
-    copy(copyObj);
-}
-
-template <typename T>
-LinkedListStack<T>& LinkedListStack<T>::operator=(const LinkedListStack<T>& rightObj) {
-    if (this != &rightObj) {
-        clear();
-        copy(rightObj);
-    }
-    return *this;
+LinkedListStack<T>::LinkedListStack() {
+    top = nullptr;
+    this->length = 0;
 }
 
 template <typename T>
@@ -23,59 +11,71 @@ LinkedListStack<T>::~LinkedListStack() {
 
 template <typename T>
 void LinkedListStack<T>::clear() {
-    // TO DO: Delete all the elements in the stack
+    Node<T>* curr = top;
+    while (curr != nullptr) {
+        Node<T>* temp = curr;
+        curr = curr->next;
+        delete temp;
+    }
+    top = nullptr;
+    this->length = 0;
 }
 
 template <typename T>
 void LinkedListStack<T>::copy(const LinkedListStack<T>& copyObj) {
-    // TO DO: Implement copy 
-    
-}
+    top = nullptr;
+    this->length = 0;
 
-template <typename T>
-int LinkedListStack<T>::getLength() const {
-    return this->length;
-}
+    if (copyObj.top == nullptr)
+        return;
 
+  
+    Node<T>* src = copyObj.top;
+    Node<T>* prevNew = nullptr;
+    Node<T>* newTop = nullptr;
 
-template <typename T>
-bool LinkedListStack<T>::isEmpty() const {
-    return this->length == 0;
+    while (src != nullptr) {
+        Node<T>* newNode = new Node<T>(src->data);
+        if (newTop == nullptr)
+            newTop = newNode;
+        else
+            prevNew->next = newNode;
+
+        prevNew = newNode;
+        src = src->next;
+    }
+
+    top = newTop;
+    this->length = copyObj.length;
 }
 
 template <typename T>
 T LinkedListStack<T>::peek() const {
-    // TO DO: implement peek
+    if (isEmpty())
+        throw string("peek: error, stack is empty, cannot access the top");
+    return top->data;
 }
 
 template <typename T>
 void LinkedListStack<T>::pop() {
-    // TO DO: Implement pop
+    if (isEmpty())
+        throw string("pop: error, stack is empty, avoiding underflow");
+
+    Node<T>* temp = top;
+    top = top->next;
+    delete temp;
+    this->length--;
 }
 
 template <typename T>
 void LinkedListStack<T>::push(const T& elem) {
-    // TO DO: Implement push
+    Node<T>* newNode = new Node<T>(elem);
+    newNode->next = top;
+    top = newNode;
+    this->length++;
 }
 
 template <typename T>
 void LinkedListStack<T>::rotate(typename Stack<T>::Direction dir) {
-    // TO DO: Implement rotate
-}
-
-template <typename T>
-void LinkedListStack<T>::print() {
-    cout << "LinkedListStack contents: ";
-    if (isEmpty()) {
-        cout << "Stack is empty, no elements to display.\n";
-    }
-    else {
-        Node<T> *curr = top;
-        while (curr != nullptr){
-            cout <<  curr->data  << "\t";
-            curr = curr->next;
-        }
-    }
-
-    cout << endl;
-}
+    if (isEmpty())
+        throw string("rotate: error
